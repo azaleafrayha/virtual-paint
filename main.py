@@ -14,18 +14,33 @@ myColors = [[165, 82, 81, 170, 140, 255], # pink -> [h_min, s_min, v_min, h_max,
 
 def findColor(webcam, myColors):
     imgHSV = cv.cvtColor(webcam, cv.COLOR_BGR2HSV)
-    lower = np.array([myColors[0][0:3]]) # create a numpy array for the lower bound of the HSV values
-    upper = np.array([myColors[0][3:6]]) 
-    mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
-    cv.imshow("Mask", mask)
+    for color in myColors:
+        lower = np.array([color[0:3]]) # create a numpy array for the lower bound of the HSV values
+        upper = np.array([color[3:6]]) 
+        mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
+        getContours(mask)
+
+def getContours(webcam):
+    contours, hierarchy = cv.findContours(webcam, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+    #RETR EXTERNAL -> retrieves only the extreme outer contours, CHAIN_APPROX_NONE -> stores all the points of the contours
+
+    for cnt in contours:
+        area = cv.contourArea(cnt)
+        print(area)
+        if area > 500: # filter out small contours/noise
+            cv.drawContours(Result, cnt, -1, (0, 0, 255), 3) 
+            perimeter = cv.arcLength(cnt, True)
+            approx = cv.approxPolyDP(cnt, 0.02 * perimeter, True) 
+            x, y, width, height = cv.boundingRect(approx) # get the bounding box of the contour
 
 while True:
     isTrue, webcam = capture.read()
-    cv.imshow("Result", webcam)
+    Result = webcam.copy()
     findColor(webcam, myColors)
+    cv.imshow("Result", Result)
     if cv.waitKey(1) & 0xFF == ord('q'):  
         break
-    
+
 capture.release()
 cv.destroyAllWindows()
 
