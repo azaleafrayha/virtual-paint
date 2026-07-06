@@ -8,56 +8,24 @@ capture.set(3, 640) # 3 is a code number for the width of the webcam, 640 is the
 capture.set(4, 480) # 4 is a code number for the height of the webcam, 480 is the height in pixels
 capture.set(10, 150) # 10 is a code number for the brightness of the webcam, 150 is the brightness value (0-255)
 
-myColors = [[165, 170, 82, 140, 91, 255], # pink
-            [26, 41, 21, 255, 157, 255], # yellow
-            [175, 179, 67, 255, 142, 255]] # orange
+myColors = [[165, 82, 81, 170, 140, 255], # pink -> [h_min, s_min, v_min, h_max, s_max, v_max]
+            [26, 21, 157, 41, 255, 255], # yellow
+            [175, 67, 142, 179, 255, 255]] # orange
 
-def empty(a):
-    pass
-
-cv.namedWindow("TrackBars") 
-cv.resizeWindow("TrackBars", 640, 240)
-
-cv.createTrackbar("Hue Min", "TrackBars", 0, 179, empty) 
-cv.createTrackbar("Hue Max", "TrackBars", 0, 179, empty)
-cv.createTrackbar("Sat Min", "TrackBars", 0, 255, empty)
-cv.createTrackbar("Sat Max", "TrackBars", 0, 255, empty)
-cv.createTrackbar("Val Min", "TrackBars", 0, 255, empty)
-cv.createTrackbar("Val Max", "TrackBars", 0, 255, empty)
+def findColor(webcam, myColors):
+    imgHSV = cv.cvtColor(webcam, cv.COLOR_BGR2HSV)
+    lower = np.array([myColors[0][0:3]]) # create a numpy array for the lower bound of the HSV values
+    upper = np.array([myColors[0][3:6]]) 
+    mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
+    cv.imshow("Mask", mask)
 
 while True:
     isTrue, webcam = capture.read()
-    webcamHSV = cv.cvtColor(webcam, cv.COLOR_BGR2HSV) 
-
-    h_min = cv.getTrackbarPos("Hue Min", "TrackBars") 
-    h_max = cv.getTrackbarPos("Hue Max", "TrackBars")
-    s_min = cv.getTrackbarPos("Sat Min", "TrackBars")
-    s_max = cv.getTrackbarPos("Sat Max", "TrackBars")
-    v_min = cv.getTrackbarPos("Val Min", "TrackBars")
-    v_max = cv.getTrackbarPos("Val Max", "TrackBars")
-
-    print(h_min, h_max, s_min, s_max, v_min, v_max) 
-
-    lower = np.array([h_min, s_min, v_min]) # create a numpy array for the lower bound of the HSV values
-    upper = np.array([h_max, s_max, v_max]) 
-    mask = cv.inRange(webcamHSV, lower, upper) # filter the image to only show the colors within the specified range
-
-    Result = cv.bitwise_and(webcam, webcam, mask=mask) # apply the mask to the original image to get the result
-    
-    cv.imshow("Webcam", webcam)
-    cv.imshow("Mask", mask)
-    cv.imshow("Result", Result)
-    
+    cv.imshow("Result", webcam)
+    findColor(webcam, myColors)
     if cv.waitKey(1) & 0xFF == ord('q'):  
         break
     
 capture.release()
 cv.destroyAllWindows()
-
-
-# def findColor(img):
-#     imgHSV = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-#     lower = np.array([h_min, s_min, v_min]) # create a numpy array for the lower bound of the HSV values
-#     upper = np.array([h_max, s_max, v_max]) 
-#     mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
 
