@@ -8,6 +8,10 @@ capture.set(3, 640) # 3 is a code number for the width of the webcam, 640 is the
 capture.set(4, 480) # 4 is a code number for the height of the webcam, 480 is the height in pixels
 capture.set(10, 150) # 10 is a code number for the brightness of the webcam, 150 is the brightness value (0-255)
 
+myColors = [[165, 170, 82, 140, 91, 255], # pink
+            [26, 41, 21, 255, 157, 255], # yellow
+            [175, 179, 67, 255, 142, 255]] # orange
+
 def empty(a):
     pass
 
@@ -49,9 +53,7 @@ while True:
     
 capture.release()
 cv.destroyAllWindows()
-    
 
-# myColors = []
 
 # def findColor(img):
 #     imgHSV = cv.cvtColor(img, cv.COLOR_BGR2HSV)
