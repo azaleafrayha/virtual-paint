@@ -9,3 +9,6 @@ Just grab few markers, write down its color values and you can draw virtually by
 - Add "clear screen" feature
 - Add customisable line thickness
 
+>> Future improvement:
+- Make an interactive GUI to make it enjoyable for the non-coders as well
+- Auto detect new marker color
