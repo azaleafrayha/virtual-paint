@@ -3,3 +3,9 @@ Just grab few markers, write down its color values and you can draw virtually by
 
 >> Documentation still on progress
 
+>> In Development:
+- Make the lines smoother for drawing
+- Add an eraser tool
+- Add "clear screen" feature
+- Add customisable line thickness
+
