@@ -12,15 +12,23 @@ myColors = [[165, 82, 81, 170, 140, 255], # pink -> [h_min, s_min, v_min, h_max,
             [26, 21, 157, 41, 255, 255], # yellow
             [175, 67, 142, 179, 255, 255]] # orange
 
-def findColor(webcam, myColors):
+myColorValues = [[102, 0, 204],
+                 [0, 255, 222],
+                 [0, 68, 255]] # in BGR format, these are the colors that will be used to draw the contours of the detected colors
+
+def findColor(webcam, myColors, myColorValues):
     imgHSV = cv.cvtColor(webcam, cv.COLOR_BGR2HSV)
+    count = 0
     for color in myColors:
         lower = np.array([color[0:3]]) # create a numpy array for the lower bound of the HSV values
         upper = np.array([color[3:6]]) 
         mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
-        getContours(mask)
+        x, y = getContours(mask)
+        cv.circle(Result, (x, y), 10, myColorValues[count], cv.FILLED) # draw a circle at the center of the detected color
+        count += 1
 
 def getContours(webcam):
+    x, y, width, height = 0, 0, 0, 0
     contours, hierarchy = cv.findContours(webcam, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     #RETR EXTERNAL -> retrieves only the extreme outer contours, CHAIN_APPROX_NONE -> stores all the points of the contours
 
@@ -28,15 +36,16 @@ def getContours(webcam):
         area = cv.contourArea(cnt)
         print(area)
         if area > 500: # filter out small contours/noise
-            cv.drawContours(Result, cnt, -1, (0, 0, 255), 3) 
+            #cv.drawContours(Result, cnt, -1, (0, 0, 255), 3) -> only to check if the contours are being detected correctly
             perimeter = cv.arcLength(cnt, True)
             approx = cv.approxPolyDP(cnt, 0.02 * perimeter, True) 
             x, y, width, height = cv.boundingRect(approx) # get the bounding box of the contour
+    return x+width//2, y # x+width//2 is the center of the bounding box, y is the top of the bounding box
 
 while True:
     isTrue, webcam = capture.read()
     Result = webcam.copy()
-    findColor(webcam, myColors)
+    findColor(webcam, myColors, myColorValues)
     cv.imshow("Result", Result)
     if cv.waitKey(1) & 0xFF == ord('q'):  
         break
