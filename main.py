@@ -16,22 +16,28 @@ myColorValues = [[102, 0, 204],
                  [0, 255, 222],
                  [0, 68, 255]] # in BGR format, these are the colors that will be used to draw the contours of the detected colors
 
+myPoints = [] # [x, y, colorId] -> this list will store the points where the colors are detected, along with the color ID
+
+
 def findColor(webcam, myColors, myColorValues):
     imgHSV = cv.cvtColor(webcam, cv.COLOR_BGR2HSV)
-    count = 0
+    count = 0 # count means the index of the color in the myColors list, which will be used to get the corresponding color value from myColorValues
+    newPoints = [] # this list will store the new points detected in this frame
     for color in myColors:
         lower = np.array([color[0:3]]) # create a numpy array for the lower bound of the HSV values
         upper = np.array([color[3:6]]) 
         mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
         x, y = getContours(mask)
-        cv.circle(Result, (x, y), 10, myColorValues[count], cv.FILLED) # draw a circle at the center of the detected color
+        cv.circle(Result, (x, y), 10, myColorValues[count], cv.FILLED) 
+        if x != 0 and y != 0: # if a color is detected (x and y are not zero)
+            newPoints.append([x, y, count]) 
         count += 1
+    return newPoints
 
 def getContours(webcam):
     x, y, width, height = 0, 0, 0, 0
     contours, hierarchy = cv.findContours(webcam, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     #RETR EXTERNAL -> retrieves only the extreme outer contours, CHAIN_APPROX_NONE -> stores all the points of the contours
-
     for cnt in contours:
         area = cv.contourArea(cnt)
         print(area)
@@ -42,10 +48,22 @@ def getContours(webcam):
             x, y, width, height = cv.boundingRect(approx) # get the bounding box of the contour
     return x+width//2, y # x+width//2 is the center of the bounding box, y is the top of the bounding box
 
+def drawOnCanvas(myPoints, myColorValues):
+    for point in myPoints:
+        cv.circle(Result, (point[0], point[1]), 10, myColorValues[point[2]], cv.FILLED) # draw a circle at the detected point with the corresponding color
+
 while True:
     isTrue, webcam = capture.read()
     Result = webcam.copy()
-    findColor(webcam, myColors, myColorValues)
+    newPoints = findColor(webcam, myColors, myColorValues)
+    if len(newPoints) != 0:
+        for newP in newPoints:
+            myPoints.append(newP) # we can't put a list inside a list, so we have to append each point individually (by this loop)
+    
+    if len(myPoints) != 0:
+        drawOnCanvas(myPoints, myColorValues)
+    
+    drawOnCanvas(myPoints, myColorValues)
     cv.imshow("Result", Result)
     if cv.waitKey(1) & 0xFF == ord('q'):  
         break
