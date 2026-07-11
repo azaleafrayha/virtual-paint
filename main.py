@@ -54,16 +54,15 @@ def drawOnCanvas(myPoints, myColorValues):
 
 while True:
     isTrue, webcam = capture.read()
-    Result = webcam.copy()
+    Result = webcam.copy() # we need to copy the webcam image to Result because we will draw on Result and not on the original webcam image
     newPoints = findColor(webcam, myColors, myColorValues)
-    if len(newPoints) != 0:
+    if len(newPoints) != 0: # if a color was detected in this frame
         for newP in newPoints:
             myPoints.append(newP) # we can't put a list inside a list, so we have to append each point individually (by this loop)
     
-    if len(myPoints) != 0:
+    if len(myPoints) != 0: # if there are any points in the myPoints list, we will draw them on the canvas
         drawOnCanvas(myPoints, myColorValues)
-    
-    drawOnCanvas(myPoints, myColorValues)
+
     cv.imshow("Result", Result)
     if cv.waitKey(1) & 0xFF == ord('q'):  
         break
