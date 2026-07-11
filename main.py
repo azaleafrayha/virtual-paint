@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+import math
 
 capture = cv.VideoCapture(0, cv.CAP_DSHOW) # 0 means the default webcam, if you have multiple webcams, you can change the number to 1, 2, etc.
 # CAP_DSHOW is a flag that tells OpenCV to use the DirectShow backend for video capture, which is a Windows-specific API for capturing video from webcams and other video devices. It can help improve compatibility and performance when using certain webcams on Windows systems.
@@ -46,9 +47,22 @@ def getContours(webcam):
     return x+width//2, y # x+width//2 is the center of the bounding box, y is the top of the bounding box
 
 def drawOnCanvas(myPoints, myColorValues):
-    for point in myPoints:
-        cv.circle(Result, (point[0], point[1]), 10, myColorValues[point[2]], cv.FILLED) # draw a circle at the detected point with the corresponding color
-
+    for i in range(1, len(myPoints)): # we start from index 1 (not 0) bcs we need to check the previous point (to draw a line from the previous point to the current point)
+        prevPoint = myPoints[i-1]
+        currPoint = myPoints[i]
+        
+        if prevPoint[2] == currPoint[2]:
+            distance = math.hypot(currPoint[0] - prevPoint[0], currPoint[1] - prevPoint[1]) # calculate the distance between the two points
+            
+            if distance < 50: # -> 50 pixels
+                cv.line(Result, (prevPoint[0], prevPoint[1]), (currPoint[0], currPoint[1]), myColorValues[currPoint[2]], 5, cv.LINE_AA)
+                        # (Result, initial coordinate, final coordinate, corresponding color to the color ID, thickness of 5 pixels, anti-aliased line)
+            else:
+                cv.line(Result, (prevPoint[0], prevPoint[1]), (currPoint[0], currPoint[1]), myColorValues[currPoint[2]], 5, cv.LINE_AA)
+                # this is to avoid drawing lines when the color is not detected for a while
+                
+        # we don't need an else here because if the color ID is different, we only want to draw lines between points of the same color
+        
 while True:
     isTrue, webcam = capture.read()
     Result = webcam.copy() # we need to copy the webcam image to Result because we will draw on Result and not on the original webcam image
