@@ -8,12 +8,10 @@ capture.set(3, 640) # 3 is a code number for the width of the webcam, 640 is the
 capture.set(4, 480) # 4 is a code number for the height of the webcam, 480 is the height in pixels
 capture.set(10, 150) # 10 is a code number for the brightness of the webcam, 150 is the brightness value (0-255)
 
-myColors = [[165, 82, 81, 170, 140, 255], # pink -> [h_min, s_min, v_min, h_max, s_max, v_max]
-            [26, 21, 157, 41, 255, 255], # yellow
+myColors = [[24, 28, 187, 57, 255, 255], # yellow -> [h_min, s_min, v_min, h_max, s_max, v_max]
             [175, 67, 142, 179, 255, 255]] # orange
 
-myColorValues = [[102, 0, 204],
-                 [0, 255, 222],
+myColorValues = [[0, 255, 222],
                  [0, 68, 255]] # in BGR format, these are the colors that will be used to draw the contours of the detected colors
 
 myPoints = [] # [x, y, colorId] -> this list will store the points where the colors are detected, along with the color ID
@@ -28,7 +26,6 @@ def findColor(webcam, myColors, myColorValues):
         upper = np.array([color[3:6]]) 
         mask = cv.inRange(imgHSV, lower, upper) # filter the image to only show the colors within the specified range
         x, y = getContours(mask)
-        cv.circle(Result, (x, y), 10, myColorValues[count], cv.FILLED) 
         if x != 0 and y != 0: # if a color is detected (x and y are not zero)
             newPoints.append([x, y, count]) 
         count += 1
