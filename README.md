@@ -4,7 +4,7 @@ Just grab few markers, write down its color values and you can draw virtually by
 >> Documentation still on progress
 
 >> In Development:
-- Make the lines smoother for drawing
+- ~~Make the lines smoother for drawing~~
 - Add an eraser tool
 - Add undo/redo button
 - Add "clear screen" feature
