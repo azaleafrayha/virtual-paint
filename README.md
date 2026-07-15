@@ -9,3 +9,12 @@ Uses a separate canvas layer designed to keep frame rendering lighter. *(Note: P
 * **Anti-Teleportation:** <br>
 Automatically detects when the marker is lifted or hidden to minimize accidental messy lines cutting across the screen. <br><br>
 <img src="output/01_output.gif" width="380">
+<br><br><br>
+
+
+## Upcoming Features
+I am having fun and actively developing this project! Here are the features planned for the next updates:
+
+- [ ] **Smart Eraser Tool:** Easily wipe out specific mistakes by toggling an eraser mode.
+- [ ] **Clear Screen Button:** Clear the entire canvas instantly with a single action.
+- [ ] **↩ Undo / Redo System:** Go back and forth between your brush strokes.
