@@ -1,15 +1,15 @@
 import cv2 as cv
 import numpy as np
 
+# --- WEBCAM SETUP ---
 capture = cv.VideoCapture(0, cv.CAP_DSHOW) # 0 means the default webcam, if you have multiple webcams, you can change the number to 1, 2, etc.
 # CAP_DSHOW is a flag that tells OpenCV to use the DirectShow backend for video capture, which is a Windows-specific API for capturing video from webcams and other video devices. It can help improve compatibility and performance when using certain webcams on Windows systems.
-
 capture.set(3, 640) # 3 is a code number for the width of the webcam, 640 is the width in pixels
 capture.set(4, 480) # 4 is a code number for the height of the webcam, 480 is the height in pixels
 capture.set(10, 150) # 10 is a code number for the brightness of the webcam, 150 is the brightness value (0-255)
 
-
-# run this function to get your HSV values for the color you want to track, then copy and paste them into the myColors list in the main.py file
+# --- GET YOUR HSV VALUES ---
+# ↳ run this function to get your HSV values for the color you want to track, then copy and paste the values into the myColors list in the main.py file
 def empty(a):
     pass
 
