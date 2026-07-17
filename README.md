@@ -9,7 +9,7 @@ Uses a separate canvas layer designed to keep frame rendering lighter. *(Note: P
 * **Anti-Teleportation:** <br>
 Automatically detects when the marker is lifted or hidden to minimize accidental messy lines cutting across the screen. <br><br>
 <img src="output/01_output.gif" width="380">
-<br><br>
+<br>
 
 ---
 
